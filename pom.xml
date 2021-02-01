@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.4.2</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>io.github.djhaskin987</groupId>
+	<artifactId>methuselah-server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>${project.groupid}:${project.artifact-id}</name>
+  <description>
+    The Long-Lived History Manager: Server
+  </description>
+  <packaging>jar</packaging>
+	<properties>
+		<java.version>11</java.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+  <url>http://github.com/djhaskin987/methuselah</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <!-- Should be format scm:git:git or scm:git:https -->
+    <connection>scm:git:https://github.com/djhaskin987/methuselah-server.git</connection>
+    <developerConnection>scm:git:ssh://github.com/djhaskin987/methuselah-server.git</developerConnection>
+    <url>https://github.com/djhaskin987/methuselah-server</url>
+    <tag>HEAD</tag>
+  </scm>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+    <plugins>
+      <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <version>2.13.0</version>
+        <configuration>
+          <directories>
+            <directory>${project.build.sourceDirectory}</directory>
+            <directory>${project.build.directory}/generated-sources</directory>
+          </directories>
+          <configuration>
+            <configFile>${project.basedir}/eclipse-formatter.xml</configFile>
+          </configuration>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
