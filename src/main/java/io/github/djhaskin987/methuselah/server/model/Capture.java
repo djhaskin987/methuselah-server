@@ -1,4 +1,4 @@
-package io.github.djhaskin987.methuselah.server;
+package io.github.djhaskin987.methuselah.server.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

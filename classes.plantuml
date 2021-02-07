@@ -1,0 +1,32 @@
+@startuml Methuselah Model
+class Series {
+    Long startSequenceNumber
+    Long latestSequenceNumber
+    Boolean finished
+}
+class Author {
+    String authorName
+    String authorEmail
+}
+class Snapshot {
+    String userAddress
+}
+class Content {
+    Byte[] data
+}
+class Repository
+
+class Revision {
+    String message
+    Date authored
+    Long sequenceNumber
+}
+
+
+Repository "1" *-- "many" Series
+Revision "many" o-- "many" Snapshot
+Revision "many" *-- "1" Author
+Series "1" *-- "many" Revision
+Snapshot "1" *-- "1" Content
+
+@enduml
