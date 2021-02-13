@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "series")
 @EntityListeners(AuditingEntityListener.class)
-public class Series {
+public final class Series {
 
     /**
      * Database primary key.
@@ -30,15 +30,15 @@ public class Series {
     /**
      * Latest assigned sequence number.
      */
-    @Column(name = "last_assigned", nullable = false)
-    private long lastAssigned;
+    @Column(name = "last_assigned")
+    private Long lastAssigned;
 
     /**
      * Sequence number at which this series starts. /** Sequence number of the
      * revision.
      */
-    @Column(name = "sequence_number", nullable = false)
-    private Long sequenceNumber;
+    @Column(name = "start_sequence_number", nullable = false)
+    private Long startSequenceNumber;
 
     /**
      * Author name.
@@ -67,6 +67,63 @@ public class Series {
     /**
      * Captures associated with this revision.
      */
-    @OneToMany(mappedBy = "capture")
-    private Set<Capture> captures;
+    @OneToMany(mappedBy = "series")
+    private Set<Revision> revisions;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public Long getLastAssigned() {
+        return lastAssigned;
+    }
+
+    public void setLastAssigned(final Long lastAssigned) {
+        this.lastAssigned = lastAssigned;
+    }
+
+    public Long getStartSequenceNumber() {
+        return startSequenceNumber;
+    }
+
+    public void setStartSequenceNumber(final Long startSequenceNumber) {
+        this.startSequenceNumber = startSequenceNumber;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(final String authorName) {
+        this.authorName = authorName;
+    }
+
+    public String getAuthorEmail() {
+        return authorEmail;
+    }
+
+    public void setAuthorEmail(final String authorEmail) {
+        this.authorEmail = authorEmail;
+    }
+
+    public String getAuthorMessage() {
+        return authorMessage;
+    }
+
+    public void setAuthorMessage(final String authorMessage) {
+        this.authorMessage = authorMessage;
+    }
+
+    public Date getAuthoredDate() {
+        return authoredDate;
+    }
+
+    public void setAuthoredDate(final Date authoredDate) {
+        this.authoredDate = authoredDate;
+    }
+
 }

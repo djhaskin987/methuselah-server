@@ -6,6 +6,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -35,6 +36,12 @@ public class Capture {
      */
     @Column(name = "file_address", nullable = false)
     private String fileAddress;
+
+    /**
+     * Parent revision housing this capture.
+     */
+    @JoinColumn(name = "revision_id", nullable = false)
+    private Revision revision;
 
     /**
      * Getter for content address.

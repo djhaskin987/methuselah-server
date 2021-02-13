@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -61,6 +62,12 @@ public class Revision {
     /**
      * Captures associated with this revision.
      */
-    @OneToMany(mappedBy = "capture")
+    @OneToMany(mappedBy = "revision")
     private Set<Capture> captures;
+
+    /**
+     * Parent series that houses this revision.
+     */
+    @JoinColumn(name = "series_id", nullable = false)
+    private Series series;
 }
