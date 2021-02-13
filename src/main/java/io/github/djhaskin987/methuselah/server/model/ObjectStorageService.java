@@ -2,6 +2,8 @@ package io.github.djhaskin987.methuselah.server.model;
 
 import java.io.InputStream;
 
+import org.springframework.core.io.Resource;
+
 /**
  * This interface provides a storage service for content objects, serving them
  * up and storing them as well.
@@ -34,11 +36,9 @@ public interface ObjectStorageService {
      *                           the actual content address, which consists of
      *                           the sha256sum hex string of the contents of the
      *                           object.
-     * @return an open InputStream to the contents, or null if this stream could
-     *         not be obtained. The caller is responsible to close this
-     *         InputStream.
+     * @return A spring Resource describing/pointing to the resource.
      */
-    InputStream getObject(String contentAddress);
+    Resource getObject(String contentAddress);
 
     /**
      * Return whether or not an object already exists in the object store.

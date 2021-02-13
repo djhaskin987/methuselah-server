@@ -1,6 +1,8 @@
 package io.github.djhaskin987.methuselah.server.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.nio.file.Paths;
@@ -16,9 +18,15 @@ import java.nio.file.Files;
 public final class FileObjectStorageService implements ObjectStorageService {
 
     /**
-     * The length of the hex string used to make sub directories.
+     * The offset in the address marking the end of the second "part" used to
+     * organize the objects.
      */
-    private static final int PART_LENGTH = 2;
+    private static final int PART_TERMINATOR = 4;
+    /**
+     * The end of the first part of the address used to organize the objects,
+     * and the start of the second.
+     */
+    private static final int PART_SEPARATOR = 2;
     /**
      * The index start of the hex string used to create directories to house the
      * objects.
@@ -58,9 +66,10 @@ public final class FileObjectStorageService implements ObjectStorageService {
     }
 
     private Path objectPath(final String contentAddress) {
-        String firstPart = contentAddress.substring(PART_START, PART_LENGTH);
-        String secondPart = contentAddress.substring(PART_LENGTH,
-                PART_LENGTH + PART_LENGTH);
+
+        String firstPart = contentAddress.substring(PART_START, PART_SEPARATOR);
+        String secondPart = contentAddress.substring(PART_SEPARATOR,
+                PART_TERMINATOR);
         return objectStorageLocation
                 .resolve(Paths.get(firstPart, secondPart, contentAddress));
     }
@@ -68,6 +77,9 @@ public final class FileObjectStorageService implements ObjectStorageService {
     @Override
     public ObjectStorageOutcome storeObject(final String contentAddress,
             final InputStream content) {
+        if (contentAddress.length() <= PART_TERMINATOR) {
+            return ObjectStorageOutcome.ADDRESS_INVALID;
+        }
         if (this.objectExists(contentAddress)) {
             return ObjectStorageOutcome.ALREADY_EXISTS;
         }
@@ -86,9 +98,9 @@ public final class FileObjectStorageService implements ObjectStorageService {
         }
         try {
             String firstPart = contentAddress.substring(PART_START,
-                    PART_LENGTH);
-            String secondPart = contentAddress.substring(PART_LENGTH,
-                    PART_LENGTH + PART_LENGTH);
+                    PART_SEPARATOR);
+            String secondPart = contentAddress.substring(PART_SEPARATOR,
+                    PART_TERMINATOR);
             Path destDir = objectStorageLocation
                     .resolve(Paths.get(firstPart, secondPart));
             Files.createDirectories(destDir);
@@ -102,12 +114,11 @@ public final class FileObjectStorageService implements ObjectStorageService {
     }
 
     @Override
-    public InputStream getObject(final String contentAddress) {
-        try {
-            return Files.newInputStream(objectPath(contentAddress));
-        } catch (IOException e) {
+    public Resource getObject(final String contentAddress) {
+        if (contentAddress.length() <= PART_TERMINATOR) {
             return null;
         }
+        return new FileSystemResource(objectPath(contentAddress));
     }
 
     @Override
