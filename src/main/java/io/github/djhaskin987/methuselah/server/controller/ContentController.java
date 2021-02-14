@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -43,24 +44,26 @@ public final class ContentController {
     /**
      * Upload objects endpoint in the API.
      *
-     *
+     * @param contentAddress
+     *                           The content address of the given object.
      * @param object
-     *                   The object given to this endpoint to upload. These
-     *                   "files" must be named after the sha256sum hex string of
-     *                   the object they are describing. This hex string is the
-     *                   content address. If that address already exists in the
-     *                   object store, it is skipped outright. If the computed
-     *                   sha256sum of the object and the name of the object do
-     *                   not match, an error for that object is returned.
-     *                   Otherwise, a successful upload message is returned for
-     *                   the object
+     *                           The object given to this endpoint to upload.
+     *                           These "files" must be named after the sha256sum
+     *                           hex string of the object they are describing.
+     *                           This hex string is the content address. If that
+     *                           address already exists in the object store, it
+     *                           is skipped outright. If the computed sha256sum
+     *                           of the object and the name of the object do not
+     *                           match, an error for that object is returned.
+     *                           Otherwise, a successful upload message is
+     *                           returned for the object
      * @return a list of metadata which essentially returns the names of these
      *         objects as recorded in the object store.
      */
-    @PostMapping("/objects/upload")
-    public UploadContentResponse uploadObject(@RequestBody
+    @PostMapping("/objects/upload/{contentAddress:.+}")
+    public UploadContentResponse uploadObject(@PathVariable
+    final String contentAddress, @RequestParam("content")
     final MultipartFile object) {
-        String contentAddress = object.getOriginalFilename();
         InputStream input;
         try {
             input = object.getInputStream();

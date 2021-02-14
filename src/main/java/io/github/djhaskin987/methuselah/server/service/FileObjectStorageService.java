@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
 import java.io.IOException;
@@ -50,6 +52,12 @@ public final class FileObjectStorageService implements ObjectStorageService {
     private final Path stagingStorageLocation;
 
     /**
+     * Logging provider.
+     */
+    private static final Logger logger = LoggerFactory
+            .getLogger(FileObjectStorageService.class);
+
+    /**
      * Consume file storage properties given in the application properties file
      * as part of the constructor.
      *
@@ -61,10 +69,16 @@ public final class FileObjectStorageService implements ObjectStorageService {
     @Autowired
     public FileObjectStorageService(
             final FileStorageProperties fileStorageProps) throws IOException {
+        logger.debug("Configuration: {}", fileStorageProps);
+        logger.debug("Permanent Storage Path: {}",
+                fileStorageProps.getStagingPath());
         this.objectStorageLocation = Paths
-                .get(fileStorageProps.getPermanentStoragePath());
+                .get(fileStorageProps.getPermanentStoragePath())
+                .toAbsolutePath().normalize();
+        logger.debug("Staging path: {}", fileStorageProps.getStagingPath());
         this.stagingStorageLocation = Paths
-                .get(fileStorageProps.getStagingPath());
+                .get(fileStorageProps.getStagingPath()).toAbsolutePath()
+                .normalize();
         Files.createDirectories(objectStorageLocation);
         Files.createDirectories(stagingStorageLocation);
 
@@ -82,6 +96,7 @@ public final class FileObjectStorageService implements ObjectStorageService {
     @Override
     public ObjectStorageOutcome storeObject(final String contentAddress,
             final InputStream content) {
+        logger.debug("WHY");
         if (contentAddress.length() <= PART_TERMINATOR) {
             return ObjectStorageOutcome.ADDRESS_INVALID;
         }
@@ -90,15 +105,25 @@ public final class FileObjectStorageService implements ObjectStorageService {
         }
         Path initialLocation = stagingStorageLocation.resolve(contentAddress);
         String comparisonAddress;
+        logger.debug("Initial file location: {}", initialLocation);
         try {
             Files.copy(content, initialLocation);
+        } catch (IOException e) {
+            logger.error("Failed to copy file to initial location.");
+            return ObjectStorageOutcome.STORAGE_ERROR;
+        }
+        try {
             InputStream sha256Stream = Files.newInputStream(initialLocation);
             comparisonAddress = DigestUtils.sha256Hex(sha256Stream);
             sha256Stream.close();
         } catch (IOException e) {
+            logger.error("Failed to compute comparison content",
+                    "address of initial file.");
             return ObjectStorageOutcome.STORAGE_ERROR;
         }
-        if (comparisonAddress != contentAddress) {
+
+        logger.debug("comparison address: {}", comparisonAddress);
+        if (!comparisonAddress.equals(contentAddress)) {
             return ObjectStorageOutcome.ADDRESS_CHECKSUM_MISMATCH;
         }
         try {
