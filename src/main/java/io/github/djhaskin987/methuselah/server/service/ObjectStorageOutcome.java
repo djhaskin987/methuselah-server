@@ -1,4 +1,4 @@
-package io.github.djhaskin987.methuselah.server.model;
+package io.github.djhaskin987.methuselah.server.service;
 
 /**
  * This enum is the return type for ObjectStorageService's

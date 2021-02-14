@@ -1,8 +1,12 @@
-package io.github.djhaskin987.methuselah.server.model;
+package io.github.djhaskin987.methuselah.server.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+
+import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.nio.file.Paths;
@@ -15,6 +19,7 @@ import java.nio.file.Files;
  * Class representing an object storage service that operates by storing to the
  * file system.
  */
+@Service
 public final class FileObjectStorageService implements ObjectStorageService {
 
     /**

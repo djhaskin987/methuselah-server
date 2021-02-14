@@ -67,7 +67,7 @@ public final class Series {
     /**
      * Captures associated with this revision.
      */
-    @OneToMany(mappedBy = "series")
+    @OneToMany(targetEntity = Revision.class, mappedBy = "series")
     private Set<Revision> revisions;
 
     public Long getId() {
@@ -125,5 +125,4 @@ public final class Series {
     public void setAuthoredDate(final Date authoredDate) {
         this.authoredDate = authoredDate;
     }
-
 }

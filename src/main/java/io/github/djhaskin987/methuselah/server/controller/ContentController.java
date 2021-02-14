@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import io.github.djhaskin987.methuselah.server.model.FileObjectStorageService;
-import io.github.djhaskin987.methuselah.server.model.ObjectStorageOutcome;
+import io.github.djhaskin987.methuselah.server.service.ObjectStorageService;
+import io.github.djhaskin987.methuselah.server.service.ObjectStorageOutcome;
 import io.github.djhaskin987.methuselah.server.payload.UploadContentResponse;
 
 /**
@@ -38,7 +38,7 @@ public final class ContentController {
      * here to store objects as they come in and out of the API.
      */
     @Autowired
-    private FileObjectStorageService storageService;
+    private ObjectStorageService storageService;
 
     /**
      * Upload objects endpoint in the API.

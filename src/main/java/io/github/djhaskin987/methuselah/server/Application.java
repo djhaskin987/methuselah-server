@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import io.github.djhaskin987.methuselah.server.model.FileStorageProperties;
+import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
 
 /**
  * Main application class of the methuselah server.
@@ -13,7 +13,7 @@ import io.github.djhaskin987.methuselah.server.model.FileStorageProperties;
 // because Spring doesn't want it to be.
 // CHECKSTYLE:OFF
 @SpringBootApplication
-@EnableConfigurationProperties(FileStorageProperties.class)
+@EnableConfigurationProperties({FileStorageProperties.class })
 public class Application {
     // CHECKSTYLE:ON
 

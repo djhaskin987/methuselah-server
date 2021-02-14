@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,7 +20,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "revisions")
 @EntityListeners(AuditingEntityListener.class)
-
 public class Revision {
 
     /**
@@ -68,6 +68,7 @@ public class Revision {
     /**
      * Parent series that houses this revision.
      */
+    @ManyToOne
     @JoinColumn(name = "series_id", nullable = false)
     private Series series;
 }
