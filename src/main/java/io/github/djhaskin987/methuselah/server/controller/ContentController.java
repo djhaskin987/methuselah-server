@@ -2,6 +2,7 @@ package io.github.djhaskin987.methuselah.server.controller;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -38,6 +39,15 @@ public final class ContentController {
      * object store, or some other server-size error occurred.
      */
     public static final int SERVER_ERROR = 500;
+    /**
+     * HTTP status code for normal operations.
+     */
+    public static final int OK = 200;
+    /**
+     * HTTP status code for a not found resource.
+     */
+    public static final int NOT_FOUND = 404;
+
     /**
      * The storage service obect that stores and retrieves objects. It is used
      * here to store objects as they come in and out of the API.
@@ -99,20 +109,23 @@ public final class ContentController {
     /**
      * Endpoint for checking if an object exists in the store.
      *
+     * @param response
+     *                           the actual spring HttpServletResponse object,
+     *                           used here to eliminate spurious Content-Length
+     *                           header.
      * @param contentAddress
      *                           the content address to check.
-     * @return a list specifying for each requested object whether it exists or
-     *         not.
      */
     @RequestMapping(path = "/objects/{contentAddress:.+}",
             method = RequestMethod.HEAD)
-    public ResponseEntity<Void> objectExists(
+    public void objectExists(
+            final HttpServletResponse response,
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress) {
         if (!storageService.objectExists(contentAddress)) {
-            return ResponseEntity.notFound().build();
+            response.setStatus(OK);
         } else {
-            return ResponseEntity.ok().build();
+            response.setStatus(NOT_FOUND);
         }
     }
 
