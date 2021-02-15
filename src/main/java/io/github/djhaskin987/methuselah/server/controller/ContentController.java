@@ -1,24 +1,23 @@
 package io.github.djhaskin987.methuselah.server.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import io.github.djhaskin987.methuselah.server.service.ObjectStorageService;
 import io.github.djhaskin987.methuselah.server.service.ObjectStorageOutcome;
@@ -34,6 +33,11 @@ import io.github.djhaskin987.methuselah.server.payload.UploadContentResponse;
 @RequestMapping("/api/v1")
 public final class ContentController {
 
+    /**
+     * HTTP Status code used if there was a problem storing an object in the
+     * object store, or some other server-size error occurred.
+     */
+    public static final int SERVER_ERROR = 500;
     /**
      * The storage service obect that stores and retrieves objects. It is used
      * here to store objects as they come in and out of the API.
@@ -60,63 +64,56 @@ public final class ContentController {
      * @return a list of metadata which essentially returns the names of these
      *         objects as recorded in the object store.
      */
-    @PostMapping("/objects/upload/{contentAddress:.+}")
-    public UploadContentResponse uploadObject(@PathVariable
-    final String contentAddress, @RequestParam("content")
-    final MultipartFile object) {
-        InputStream input;
-        try {
-            input = object.getInputStream();
-        } catch (IOException e) {
-            return new UploadContentResponse(contentAddress, "storage-error");
-        }
+    @PutMapping("/objects/{contentAddress:.+}")
+    public ResponseEntity<UploadContentResponse> uploadObject(
+            @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
+            final String contentAddress, @RequestParam("content")
+            final MultipartFile object) {
         ObjectStorageOutcome outcome = storageService
-                .storeObject(contentAddress, input);
-        try {
-            input.close();
-        } catch (IOException e) {
-            return new UploadContentResponse(contentAddress, "storage-error");
-        }
+                .storeObject(contentAddress, object);
         switch (outcome) {
         case ADDRESS_INVALID:
-            return new UploadContentResponse(contentAddress, "address-invalid");
+            return ResponseEntity.badRequest().body(new UploadContentResponse(
+                    contentAddress, "address-invalid"));
         case ADDRESS_CHECKSUM_MISMATCH:
-            return new UploadContentResponse(contentAddress,
-                    "address-checksum-mimsmatch");
+            return ResponseEntity.badRequest().body(new UploadContentResponse(
+                    contentAddress, "address-checksum-mimsmatch"));
         case ALREADY_EXISTS:
-            return new UploadContentResponse(contentAddress,
-                    "object-already-exists");
+            return ResponseEntity.ok().body(new UploadContentResponse(
+                    contentAddress, "object-already-exists"));
         case STORAGE_ERROR:
-            return new UploadContentResponse(contentAddress, "storage-error");
+            return ResponseEntity.status(SERVER_ERROR).body(
+                    new UploadContentResponse(contentAddress, "storage-error"));
         case SUCCESSFUL:
-            return new UploadContentResponse(contentAddress, "successful");
+            return ResponseEntity
+                    .created(URI.create(
+                            String.format("/objects/%s", contentAddress)))
+                    .body(new UploadContentResponse(contentAddress,
+                            "successful"));
         default:
-            return new UploadContentResponse(contentAddress, "unknown-error");
+            return ResponseEntity.status(SERVER_ERROR).body(
+                    new UploadContentResponse(contentAddress, "unknown-error"));
         }
     }
 
     /**
-     * Endpoint for checking multiple objects to see if they already exist. This
-     * endpoint is called by the client to be able to see whether or not certain
-     * objects already exist in the endpoint, and if they do, the client may
-     * refrain from re-uploading them.
+     * Endpoint for checking if an object exists in the store.
      *
-     * @param requests
-     *                     a list of JSON objects describing the objects for
-     *                     which to check for their existence.
+     * @param contentAddress
+     *                           the content address to check.
      * @return a list specifying for each requested object whether it exists or
      *         not.
      */
-    @PostMapping("/objects/check-multiple")
-    public List<String> checkExistsMultiple(@Validated @RequestBody
-    final String[] requests) {
-        List<String> presentObjects = new ArrayList<String>();
-        for (String request : requests) {
-            if (storageService.objectExists(request)) {
-                presentObjects.add(request);
-            }
+    @RequestMapping(path = "/objects/{contentAddress:.+}",
+            method = RequestMethod.HEAD)
+    public ResponseEntity<Void> objectExists(
+            @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
+            final String contentAddress) {
+        if (!storageService.objectExists(contentAddress)) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().build();
         }
-        return presentObjects;
     }
 
     /**
@@ -127,9 +124,10 @@ public final class ContentController {
      *                           the address of an object.
      * @return the object in question.
      */
-    @GetMapping("/objects/download/{object}")
-    public ResponseEntity<Resource> downloadObject(@PathVariable
-    final String contentAddress) {
+    @GetMapping("/objects/{object:.+}")
+    public ResponseEntity<Resource> downloadObject(
+            @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
+            final String contentAddress) {
         Resource resource = storageService.getObject(contentAddress);
         if (resource == null) {
             return ResponseEntity.notFound().build();

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
 
@@ -95,8 +96,7 @@ public final class FileObjectStorageService implements ObjectStorageService {
 
     @Override
     public ObjectStorageOutcome storeObject(final String contentAddress,
-            final InputStream content) {
-        logger.debug("WHY");
+            final MultipartFile content) {
         if (contentAddress.length() <= PART_TERMINATOR) {
             return ObjectStorageOutcome.ADDRESS_INVALID;
         }
@@ -107,8 +107,8 @@ public final class FileObjectStorageService implements ObjectStorageService {
         String comparisonAddress;
         logger.debug("Initial file location: {}", initialLocation);
         try {
-            Files.copy(content, initialLocation);
-        } catch (IOException e) {
+            content.transferTo(initialLocation);
+        } catch (Exception e) {
             logger.error("Failed to copy file to initial location.");
             return ObjectStorageOutcome.STORAGE_ERROR;
         }

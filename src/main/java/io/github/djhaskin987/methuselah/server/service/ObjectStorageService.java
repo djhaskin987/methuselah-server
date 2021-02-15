@@ -1,8 +1,7 @@
 package io.github.djhaskin987.methuselah.server.service;
 
-import java.io.InputStream;
-
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This interface provides a storage service for content objects, serving them
@@ -20,14 +19,14 @@ public interface ObjectStorageService {
      *                           not match contentAddress. storeObject fully
      *                           consumes and closes the InputStream. @throws
      * @param content
-     *                           the input stream to the content. After
-     *                           invocation, this input stream will be at the
-     *                           end of stream.
+     *                           the multipart file containing the content.
+     *                           After invocation, this input stream will be at
+     *                           the end of stream.
      * @return whether or not the storage action worked, and if it didn't, why
      *         not.
      */
     ObjectStorageOutcome storeObject(String contentAddress,
-            InputStream content);
+            MultipartFile content);
 
     /**
      * Retrieve an InputStream to the stored object in the object store.
