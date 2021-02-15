@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,21 +34,8 @@ import io.github.djhaskin987.methuselah.server.payload.UploadContentResponse;
  */
 @RestController
 @RequestMapping("/api/v1")
-public final class ContentController {
-
-    /**
-     * HTTP Status code used if there was a problem storing an object in the
-     * object store, or some other server-size error occurred.
-     */
-    public static final int SERVER_ERROR = 500;
-    /**
-     * HTTP status code for normal operations.
-     */
-    public static final int OK = 200;
-    /**
-     * HTTP status code for a not found resource.
-     */
-    public static final int NOT_FOUND = 404;
+@Validated
+public class ContentController {
 
     /**
      * The storage service obect that stores and retrieves objects. It is used
@@ -74,7 +63,7 @@ public final class ContentController {
      * @return a list of metadata which essentially returns the names of these
      *         objects as recorded in the object store.
      */
-    @PutMapping("/objects/{contentAddress:.+}")
+    @PutMapping("/object/{contentAddress:.+}")
     public ResponseEntity<UploadContentResponse> uploadObject(
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress, @RequestParam("content")
@@ -92,17 +81,21 @@ public final class ContentController {
             return ResponseEntity.ok().body(new UploadContentResponse(
                     contentAddress, "object-already-exists"));
         case STORAGE_ERROR:
-            return ResponseEntity.status(SERVER_ERROR).body(
-                    new UploadContentResponse(contentAddress, "storage-error"));
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
+                            new UploadContentResponse(contentAddress,
+                                    "storage-error"));
         case SUCCESSFUL:
             return ResponseEntity
                     .created(URI.create(
-                            String.format("/objects/%s", contentAddress)))
+                            String.format("/object/%s", contentAddress)))
                     .body(new UploadContentResponse(contentAddress,
                             "successful"));
         default:
-            return ResponseEntity.status(SERVER_ERROR).body(
-                    new UploadContentResponse(contentAddress, "unknown-error"));
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
+                            new UploadContentResponse(contentAddress,
+                                    "unknown-error"));
         }
     }
 
@@ -116,16 +109,16 @@ public final class ContentController {
      * @param contentAddress
      *                           the content address to check.
      */
-    @RequestMapping(path = "/objects/{contentAddress:.+}",
+    @RequestMapping(path = "/object/{contentAddress:.+}",
             method = RequestMethod.HEAD)
     public void objectExists(
             final HttpServletResponse response,
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress) {
         if (!storageService.objectExists(contentAddress)) {
-            response.setStatus(OK);
+            response.setStatus(HttpStatus.OK.value());
         } else {
-            response.setStatus(NOT_FOUND);
+            response.setStatus(HttpStatus.NOT_FOUND.value());
         }
     }
 
@@ -137,7 +130,7 @@ public final class ContentController {
      *                           the address of an object.
      * @return the object in question.
      */
-    @GetMapping("/objects/{object:.+}")
+    @GetMapping("/object/{object:.+}")
     public ResponseEntity<Resource> downloadObject(
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress) {
