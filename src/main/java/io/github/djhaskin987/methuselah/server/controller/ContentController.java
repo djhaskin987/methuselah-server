@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -45,6 +47,12 @@ public class ContentController {
     private ObjectStorageService storageService;
 
     /**
+     * Logging provider.
+     */
+    private static final Logger logger = LoggerFactory
+            .getLogger(ContentController.class);
+
+    /**
      * Upload objects endpoint in the API.
      *
      * @param contentAddress
@@ -68,6 +76,7 @@ public class ContentController {
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress, @RequestParam("content")
             final MultipartFile object) {
+        logger.debug("Beginning PUT /object/{}", contentAddress);
         ObjectStorageOutcome outcome = storageService
                 .storeObject(contentAddress, object);
         switch (outcome) {
@@ -115,7 +124,9 @@ public class ContentController {
             final HttpServletResponse response,
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress) {
-        if (!storageService.objectExists(contentAddress)) {
+        logger.debug("Beginning HEAD /object/{}", contentAddress);
+        response.setHeader("Content-Length", "-1");
+        if (storageService.objectExists(contentAddress)) {
             response.setStatus(HttpStatus.OK.value());
         } else {
             response.setStatus(HttpStatus.NOT_FOUND.value());

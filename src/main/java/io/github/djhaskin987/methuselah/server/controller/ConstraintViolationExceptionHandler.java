@@ -2,6 +2,8 @@ package io.github.djhaskin987.methuselah.server.controller;
 
 import javax.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ConstraintViolationExceptionHandler
         extends ResponseEntityExceptionHandler {
+
+    /**
+     * Logging provider.
+     */
+    private static final Logger logger = LoggerFactory
+            .getLogger(ConstraintViolationExceptionHandler.class);
+
     /**
      * Handle constraint violations using 400 BAD REQUEST.
      */
