@@ -5,7 +5,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.2</version>
-        <relativePath />
+        <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
     <groupId>io.github.djhaskin987</groupId>
@@ -13,8 +13,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>${project.groupid}:${project.artifact-id}</name>
     <description>
-        The Long-Lived History Manager: Server
-    </description>
+    The Long-Lived History Manager: Server
+  </description>
     <packaging>jar</packaging>
     <properties>
         <java.version>11</java.version>
