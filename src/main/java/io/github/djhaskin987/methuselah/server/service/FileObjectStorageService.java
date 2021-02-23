@@ -65,6 +65,7 @@ public final class FileObjectStorageService implements ObjectStorageService {
      * @param fileStorageProps
      *                             the file storage properties given in the
      *                             properties file.
+     *
      * @throws IOException
      */
     @Autowired
@@ -113,9 +114,9 @@ public final class FileObjectStorageService implements ObjectStorageService {
             return ObjectStorageOutcome.STORAGE_ERROR;
         }
         try {
-            InputStream sha256Stream = Files.newInputStream(initialLocation);
-            comparisonAddress = DigestUtils.sha256Hex(sha256Stream);
-            sha256Stream.close();
+            InputStream sha512Stream = Files.newInputStream(initialLocation);
+            comparisonAddress = DigestUtils.sha512Hex(sha512Stream);
+            sha512Stream.close();
         } catch (IOException e) {
             logger.error("Failed to compute comparison content",
                     "address of initial file.");

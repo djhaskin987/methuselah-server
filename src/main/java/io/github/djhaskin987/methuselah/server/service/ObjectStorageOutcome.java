@@ -1,9 +1,8 @@
 package io.github.djhaskin987.methuselah.server.service;
 
 /**
- * This enum is the return type for ObjectStorageService's
- * <code>storeObject</code>. It specifies what kinds of errors might happen when
- * attempting to store an object.
+ * This enum is the return type for ObjectStorageService's <code>storeObject</code>. It specifies what kinds of errors
+ * might happen when attempting to store an object.
  */
 public enum ObjectStorageOutcome {
     /**

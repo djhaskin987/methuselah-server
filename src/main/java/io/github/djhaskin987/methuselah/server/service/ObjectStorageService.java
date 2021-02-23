@@ -15,13 +15,14 @@ public interface ObjectStorageService {
      * @param contentAddress
      *                           the actual content address. @param content the
      *                           input stream to access the content. Storage
-     *                           will fail if the sha256 sum of the content does
+     *                           will fail if the sha512 sum of the content does
      *                           not match contentAddress. storeObject fully
      *                           consumes and closes the InputStream. @throws
      * @param content
      *                           the multipart file containing the content.
      *                           After invocation, this input stream will be at
      *                           the end of stream.
+     *
      * @return whether or not the storage action worked, and if it didn't, why
      *         not.
      */
@@ -33,8 +34,9 @@ public interface ObjectStorageService {
      *
      * @param contentAddress
      *                           the actual content address, which consists of
-     *                           the sha256sum hex string of the contents of the
+     *                           the sha512sum hex string of the contents of the
      *                           object.
+     *
      * @return A spring Resource describing/pointing to the resource.
      */
     Resource getObject(String contentAddress);
@@ -43,8 +45,9 @@ public interface ObjectStorageService {
      * Return whether or not an object already exists in the object store.
      *
      * @param contentAddress
-     *                           the content address (sha256sum hex string of
+     *                           the content address (sha512sum hex string of
      *                           the content in the object).
+     *
      * @return whether or not the content already exists in the store.
      */
     boolean objectExists(String contentAddress);

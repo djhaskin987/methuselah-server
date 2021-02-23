@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
@@ -29,12 +31,14 @@ public class Capture {
     /**
      * Content address, which is usually the sha512 hash of the object/file.
      */
+    @NotBlank
     @Column(name = "content_address", nullable = false)
     private String contentAddress;
 
     /**
      * Filename for when the file is re-hydrated. it gets put here.
      */
+    @NotBlank
     @Column(name = "file_address", nullable = false)
     private String fileAddress;
 

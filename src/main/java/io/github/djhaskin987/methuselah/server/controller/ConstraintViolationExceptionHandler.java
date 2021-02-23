@@ -31,9 +31,10 @@ public class ConstraintViolationExceptionHandler
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
     protected ResponseEntity<Object> handleConstraintViolation(
-            final ConstraintViolationException e, final WebRequest request) {
+            final ConstraintViolationException e,
+            final WebRequest request) {
+        logger.debug("Handling constraint violation");
         return handleExceptionInternal(e, (Object) e.getMessage(),
-                new HttpHeaders(),
-                HttpStatus.BAD_REQUEST, request);
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

@@ -59,22 +59,24 @@ public class ContentController {
      *                           The content address of the given object.
      * @param object
      *                           The object given to this endpoint to upload.
-     *                           These "files" must be named after the sha256sum
+     *                           These "files" must be named after the sha512sum
      *                           hex string of the object they are describing.
      *                           This hex string is the content address. If that
      *                           address already exists in the object store, it
-     *                           is skipped outright. If the computed sha256sum
+     *                           is skipped outright. If the computed sha512sum
      *                           of the object and the name of the object do not
      *                           match, an error for that object is returned.
      *                           Otherwise, a successful upload message is
      *                           returned for the object
+     *
      * @return a list of metadata which essentially returns the names of these
      *         objects as recorded in the object store.
      */
     @PutMapping("/object/{contentAddress:.+}")
     public ResponseEntity<UploadContentResponse> uploadObject(
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
-            final String contentAddress, @RequestParam("content")
+            final String contentAddress,
+            @RequestParam("content")
             final MultipartFile object) {
         logger.debug("Beginning PUT /object/{}", contentAddress);
         ObjectStorageOutcome outcome = storageService
@@ -84,16 +86,17 @@ public class ContentController {
             return ResponseEntity.badRequest().body(new UploadContentResponse(
                     contentAddress, "address-invalid"));
         case ADDRESS_CHECKSUM_MISMATCH:
-            return ResponseEntity.badRequest().body(new UploadContentResponse(
-                    contentAddress, "address-checksum-mimsmatch"));
+            return ResponseEntity.badRequest()
+                    .body(new UploadContentResponse(contentAddress,
+                            "address-checksum-mimsmatch"));
         case ALREADY_EXISTS:
             return ResponseEntity.ok().body(new UploadContentResponse(
                     contentAddress, "object-already-exists"));
         case STORAGE_ERROR:
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
-                            new UploadContentResponse(contentAddress,
-                                    "storage-error"));
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .body(new UploadContentResponse(contentAddress,
+                            "storage-error"));
         case SUCCESSFUL:
             return ResponseEntity
                     .created(URI.create(
@@ -102,9 +105,9 @@ public class ContentController {
                             "successful"));
         default:
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(
-                            new UploadContentResponse(contentAddress,
-                                    "unknown-error"));
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .body(new UploadContentResponse(contentAddress,
+                            "unknown-error"));
         }
     }
 
@@ -120,8 +123,7 @@ public class ContentController {
      */
     @RequestMapping(path = "/object/{contentAddress:.+}",
             method = RequestMethod.HEAD)
-    public void objectExists(
-            final HttpServletResponse response,
+    public void objectExists(final HttpServletResponse response,
             @PathVariable @NotBlank @Pattern(regexp = "^[0-9a-f]{64}$")
             final String contentAddress) {
         logger.debug("Beginning HEAD /object/{}", contentAddress);
@@ -139,6 +141,7 @@ public class ContentController {
      *
      * @param contentAddress
      *                           the address of an object.
+     *
      * @return the object in question.
      */
     @GetMapping("/object/{object:.+}")

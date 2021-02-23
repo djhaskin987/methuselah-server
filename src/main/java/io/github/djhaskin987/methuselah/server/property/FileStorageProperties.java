@@ -4,15 +4,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 
 /**
- * POJO class that defines file object storage properties used in the File
- * Storage Service.
+ * POJO class that defines file object storage properties used in the File Storage Service.
  */
 @ConfigurationProperties(prefix = "objects")
 @ConstructorBinding
 public class FileStorageProperties {
     /**
-     * The location for temporary staging of objects while they are evaluated
-     * for accuracy before being moved into their final storage location.
+     * The location for temporary staging of objects while they are evaluated for accuracy before being moved into their
+     * final storage location.
      */
     private final String stagingPath;
 
@@ -34,20 +33,19 @@ public class FileStorageProperties {
      */
     @Override
     public String toString() {
-        return "FileStorageProperties{stagingPath=" + stagingPath
-                + ",permanentStoragePath=" + permanentStoragePath + "}";
+        return "FileStorageProperties{stagingPath=" + stagingPath + ",permanentStoragePath=" + permanentStoragePath
+                + "}";
     }
 
     /**
      * Standard constructor.
      *
      * @param stagingPath
-     *                                 the staging path.
+     *            the staging path.
      * @param permanentStoragePath
-     *                                 permanent storage path.
+     *            permanent storage path.
      */
-    public FileStorageProperties(final String stagingPath,
-            final String permanentStoragePath) {
+    public FileStorageProperties(final String stagingPath, final String permanentStoragePath) {
         this.stagingPath = stagingPath;
         this.permanentStoragePath = permanentStoragePath;
     }

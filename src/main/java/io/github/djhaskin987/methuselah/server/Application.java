@@ -3,6 +3,7 @@ package io.github.djhaskin987.methuselah.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
 
@@ -14,6 +15,7 @@ import io.github.djhaskin987.methuselah.server.property.FileStorageProperties;
 // CHECKSTYLE:OFF
 @SpringBootApplication
 @EnableConfigurationProperties(FileStorageProperties.class)
+@EnableJpaAuditing
 public class Application {
     // CHECKSTYLE:ON
 
@@ -21,7 +23,7 @@ public class Application {
      * Main method for the spring boot application.
      *
      * @param args
-     *                 CLI arguments.
+     *            CLI arguments.
      */
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
