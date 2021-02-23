@@ -12,9 +12,7 @@
     <artifactId>methuselah-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>${project.groupid}:${project.artifact-id}</name>
-    <description>
-    The Long-Lived History Manager: Server
-  </description>
+    <description>The Long-Lived History Manager: Server</description>
     <packaging>jar</packaging>
     <properties>
         <java.version>11</java.version>
@@ -38,6 +36,12 @@
         <tag>HEAD</tag>
     </scm>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.4</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -72,6 +76,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <build>
         <plugins>
             <plugin>
