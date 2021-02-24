@@ -5,12 +5,14 @@ package io.github.djhaskin987.methuselah.server.payload;
  */
 public final class UploadContentResponse {
     /**
-     * Content address expressed as a sha256 hex string of the checksum of the file.
+     * Content address expressed as a sha256 hex string of the checksum of the
+     * file.
      */
     private String contentAddress;
 
     /**
-     * Message that describes whether or not upload was successful, or why it wasn't.
+     * Message that describes whether or not upload was successful, or why it
+     * wasn't.
      */
     private String status;
 
@@ -18,11 +20,12 @@ public final class UploadContentResponse {
      * Construct the upload content response in the usual way.
      *
      * @param contentAddress
-     *            The content address, a sha256 hex string.
+     *                           The content address, a sha256 hex string.
      * @param status
-     *            a status line for this response.
+     *                           a status line for this response.
      */
-    public UploadContentResponse(final String contentAddress, final String status) {
+    public UploadContentResponse(
+            final String contentAddress, final String status) {
 
         this.contentAddress = contentAddress;
         this.status = status;

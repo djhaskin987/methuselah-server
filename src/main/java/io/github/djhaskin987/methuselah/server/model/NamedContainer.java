@@ -7,6 +7,10 @@ import javax.persistence.EntityListeners;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+/**
+ * A NamedContainer is a container that has a name. It encapsulates the name
+ * field in addition to all the other fields in a container table.
+ */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class NamedContainer extends Container {
@@ -23,11 +27,11 @@ public abstract class NamedContainer extends Container {
     @Column(name = "name", nullable = false)
     private String name;
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 

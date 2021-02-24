@@ -27,8 +27,7 @@ public final class Series extends NamedContainer {
     private Long lastAssigned;
 
     /**
-     * Sequence number at which this series starts. /** Sequence number of the
-     * revision.
+     * Sequence number at which this series starts.
      */
     @Column(name = "start_sequence_number", nullable = false)
     private Long startSequenceNumber;
@@ -60,5 +59,13 @@ public final class Series extends NamedContainer {
 
     public void setStartSequenceNumber(final Long startSequenceNumber) {
         this.startSequenceNumber = startSequenceNumber;
+    }
+
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(final History history) {
+        this.history = history;
     }
 }

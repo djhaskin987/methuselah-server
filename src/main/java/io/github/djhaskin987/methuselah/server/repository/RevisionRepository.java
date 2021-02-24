@@ -2,8 +2,8 @@ package io.github.djhaskin987.methuselah.server.repository;
 
 import io.github.djhaskin987.methuselah.server.model.Revision;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +13,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RevisionRepository extends JpaRepository<Revision, Long> {
-    List<Revision> findBySeriesId(Long seriesId);
+    /**
+     * Find by series ID.
+     *
+     * @param seriesId
+     *                     the ID of the series.
+     * @param pageable
+     *                     the paging object from Spring.
+     * @return page object of revision objects.
+     */
+    Page<Revision> findBySeriesId(Long seriesId, Pageable pageable);
 }

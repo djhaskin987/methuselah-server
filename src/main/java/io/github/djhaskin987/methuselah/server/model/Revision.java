@@ -42,4 +42,20 @@ public class Revision extends Container {
     public final Set<Capture> getCaptures() {
         return captures;
     }
+
+    public final Long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public final void setSequenceNumber(final Long sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public final Series getSeries() {
+        return series;
+    }
+
+    public final void setSeries(final Series series) {
+        this.series = series;
+    }
 }

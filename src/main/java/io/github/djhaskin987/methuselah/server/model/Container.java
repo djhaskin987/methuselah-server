@@ -63,6 +63,14 @@ public abstract class Container implements Serializable {
     @Column(name = "description")
     private String description;
 
+    public final Long getId() {
+        return id;
+    }
+
+    public final void setId(final Long id) {
+        this.id = id;
+    }
+
     public final Date getCreated() {
         return created;
     }

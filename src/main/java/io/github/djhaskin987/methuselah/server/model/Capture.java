@@ -50,6 +50,13 @@ public class Capture {
     private Revision revision;
 
     /**
+     * Author of this capture.
+     */
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
+
+    /**
      * Getter for content address.
      *
      * @return content address.

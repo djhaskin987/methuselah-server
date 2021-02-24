@@ -1,11 +1,7 @@
 package io.github.djhaskin987.methuselah.server.model;
 
 import java.util.Set;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,25 +12,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "history")
-public final class History extends Container {
+public final class History extends NamedContainer {
 
     /**
      * Serial UID.
      */
     private static final long serialVersionUID = 562913777254526430L;
-
-    /**
-     * Database primary key.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    /**
-     * Latest assigned sequence number.
-     */
-    @Column(name = "last_assigned")
-    private Long lastAssigned;
 
     /**
      * Series associated with this history.
@@ -49,11 +32,7 @@ public final class History extends Container {
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
+    public void setOrganization(final Organization organization) {
+        this.organization = organization;
     }
 }
